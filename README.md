@@ -1,2 +1,2 @@
 # mini_capstone
-checkers
+checkers!
