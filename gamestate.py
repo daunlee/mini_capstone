@@ -1,15 +1,21 @@
 from statenode import StateNode
-WALL = '#'
-GOAL = 'G'
 is_king = False
+
 
 class GameState(StateNode):
     # A class-level variable (static) representing all the directions
     # the position can move.
+    # "RF": right forward; "LF": left forward; "RB": right bottom; "LB": left bottom
     if (is_king):
         NEIGHBORING_STEPS = {(1, 1): "RF", (-1, 1):"LF", (1, -1): "RB", (-1, -1): "LB"}
     else:
         NEIGHBORING_STEPS = {(1, 1): "RF", (-1, 1):"LF"}
+
+
+    num_rows = 8
+    board_str = {'-': "BOARD", 'x': "BLACK", 'o': "WHITE", 'X': "KBLACK", 'O': "KWHITE"}
+    positions_black = []
+    positions_red = []
     # A class-level variable (static) representing the cost to move onto
     # different types of terrain.
 
@@ -22,22 +28,28 @@ class GameState(StateNode):
     def readFromFile(filename):
         with open(filename, 'r') as file:
             grid = []
-            max_r, max_c = [int(x) for x in file.readline().split()]
-            init_r, init_c = [int(x) for x in file.readline().split()]
-            for i in range(max_r):
+            # max_r, max_c = [int(x) for x in file.readline().split()]
+            # init_r, init_c = [int(x) for x in file.readline().split()]
+            for i in range(GameState.num_rows):
                 row = list(file.readline().strip()) # or file.readline().split()
-                assert (len(row) == max_c)
+                assert (len(row) == GameState.num_rows)
                 grid.append(tuple(row)) # list -> tuple makes it immutable, needed for hashing
+
+                for j in range(GameState.num_rows):
+                    if row[j] == 'x' or row[j] == 'X':
+                        GameState.positions_black.append([i, j])
+                    elif row[j] == 'o' or row[j] == 'O':
+                        GameState.positions_red.append([i, j])
+
             grid = tuple(grid) # grid is a tuple of tuples - a 2d grid!
-            return GameState(position = (init_r, init_c),
+            return GameState(position = (init_r, init_c).,
                                 grid = grid,
                                 last_action = None,
                                 parent = None,
-                                path_length = 0,
-                                path_cost = 0)
+                                path_length = 0)
 
     """
-    Creates a RoombaRouteState node.
+    Creates a CheckeState node.
     Takes:
     position: 2-tuple of current coordinates
     grid: 2-d grid representing features of the maze.
@@ -45,13 +57,12 @@ class GameState(StateNode):
 
     parent: the preceding StateNode along the path taken to reach the state
             (the initial state's parent should be None)
-    path_length, the number of actions taken in the path to reach the state
     path_cost (optional), the cost of the entire path to reach the state
     """
-    def __init__(self, position, grid, last_action, parent, path_length, path_cost = 0) :
+    def __init__(self, position, grid, last_action, parent, path_length) :
 
-        super().__init__(parent, path_length, path_cost)
-        self.my_r, self.my_c = position[0], position[1]
+        super().__init__(parent, path_length)
+        #self.my_r, self.my_c = position[0], position[1]
         self.grid = grid
         self.last_action = last_action
 
