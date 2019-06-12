@@ -375,6 +375,10 @@ def advanced_heuristic_eval_roomba(state, maximizer_player_num):
     raise NotImplementedError
     return 0
 
+# DO THIS
+def checkers_heuristic_eval_diff(state, maximizer_player_num):
+    return True
+
 
 roomba_functions = {
     "endgame_util_fn_dict" : {"basic": basic_endgame_utility,

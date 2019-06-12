@@ -114,14 +114,17 @@ class GameStateNode:
         """
         raise NotImplementedError
 
-    def is_endgame_state(self) :
-
+    def is_endgame_state(self):
         """
         Returns whether or not this state is an endgame (terminal) state (True/False)
         """
-        raise NotImplementedError
+        if not self.generate_next_states_and_actions():
+            return True
 
-    def endgame_winner(self) :
+        return False
+
+
+    def endgame_winner(self):
         """
         Returns number of winning player if an endgame state.
         If no winning player, return 0.
@@ -135,7 +138,10 @@ class GameStateNode:
         An endgame utility function is needed to evaluate the relative
         "goodness" of endgame states.
         """
-        raise NotImplementedError
+        if self.is_endgame_state():
+            return self.get_current_player()
+
+        return False
 
 
 
